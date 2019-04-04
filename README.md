@@ -150,6 +150,24 @@ useful as a reference.
        addr_t p = f * 4096 + v.off;
        ```
 
+       Here is an illustration of the general process:
+
+       ```
+             table0        table1        table2        table3
+            |------|  /~~>|------|  /~~>|------|  /~~>|------|
+       [pn0]|    ~~+~/    |      |  |   |      |  |   |      |
+            |      | [pn1]|    ~~|~/    |      |  |   |      |
+            |      |      |      | [pn2]|    ~~|~/    |      |
+            |      |      |      |      |      | [pn3]|   20 |
+            |------|      |------|      |------|      |------|
+       ```
+
+       In general, the first three tables provide pointers to the next table
+       and the final table provides the actual frame number. Therefore,
+       a value of `0` in the first three tables is considered a `NULL` pointer
+       whereas a `0` in the final table would refer to the first frame in
+       physical memory.
+
      * If the next table does not exist, then you should use `malloc(3)` to
        dynamically allocate the table and initialize its values. For this
        exercise, you may initialize the intermediate tables to and frame numbers
