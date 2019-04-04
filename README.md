@@ -41,8 +41,8 @@ useful as a reference.
       Show your work. You may express the solution in pseudo-C code.
 
    1. Assuming a single page table, how big would that table need to be,
-      in the following units: B and GB? Show your work. Please provide the exact
-      integer values.
+      in the following units: bytes (B) and gibibytes (GiB)? 
+      Show your work. Please provide the exact integer values.
 
    1. Assume that each virtual address is broken up in to three parts:
 
@@ -54,8 +54,8 @@ useful as a reference.
 
       If the number of bits reserved for `table0` and `table1` are
       equal, then how big would `table0` need to be, in the
-      following units: B and KB? Show your work. Please provide the exact
-      integer values.
+      following units: bytes (B) and gibibytes (GiB)? 
+      Show your work. Please provide the exact integer values.
 
    1. Assume that each virtual address is broken up in to five parts:
 
@@ -67,8 +67,8 @@ useful as a reference.
 
       If the number of bits reserved for each table is equal,
       then how big would `table0` need to be, in the following
-      units: B and KB? Show your work. Please provide the exact
-      integer values.
+      units: bytes (B) and kibibytes (KiB)? 
+      Show your work. Please provide the exact integer values.
 
 **CHECKPOINT**
 
