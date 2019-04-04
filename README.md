@@ -41,7 +41,7 @@ useful as a reference.
       Show your work. You may express the solution in pseudo-C code.
 
    1. Assuming a single page table, how big would that table need to be,
-      in the following units: B, KB, MB, and GB?
+      in the following units: B and GB?
       Show your work. You may express the solution in pseudo-C code.
 
    1. Assume that each virtual address is broken up in to three parts:
