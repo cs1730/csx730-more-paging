@@ -41,8 +41,8 @@ useful as a reference.
       Show your work. You may express the solution in pseudo-C code.
 
    1. Assuming a single page table, how big would that table need to be,
-      in the following units: B and GB?
-      Show your work. You may express the solution in pseudo-C code.
+      in the following units: B and GB? Show your work. Please provide the exact
+      integer values.
 
    1. Assume that each virtual address is broken up in to three parts:
 
@@ -54,8 +54,8 @@ useful as a reference.
 
       If the number of bits reserved for `table0` and `table1` are
       equal, then how big would `table0` need to be, in the
-      following units: B and KB?
-      Show your work. You may express the solution in pseudo-C code.
+      following units: B and KB? Show your work. Please provide the exact
+      integer values.
 
    1. Assume that each virtual address is broken up in to five parts:
 
@@ -67,8 +67,8 @@ useful as a reference.
 
       If the number of bits reserved for each table is equal,
       then how big would `table0` need to be, in the following
-      units: B and KB?
-      Show your work. You may express the solution in pseudo-C code.
+      units: B and KB? Show your work. Please provide the exact
+      integer values.
 
 **CHECKPOINT**
 
@@ -83,21 +83,37 @@ useful as a reference.
    * The variable for each page number should be `pn0`, `pn1`, etc.,
      and the page offset variable should be called `off`.
 
-1. For convenience, also create a typedef for an `addr_t` type based
+   * In this scenario, GCC will pack the members of the `struct`
+     in order from the lowest order bits to the highest order bits
+     (i.e., from right to left).
+
+1. For convenience, also create a `typedef` for an `addr_t` type based
    on `struct addr_type`.
 
 1. Under "Struct Size" in `SUBMISSION.md`, please indicate what
    the size of the `struct` is, in bytes.
 
 1. In `main`, initialize an `addr_t` with some page number values
-   and an offset value. Then, `make` the executable and use GDB to
+   and an offset value. For example, you might assign each part
+   a value that is one less than a power of two so that they're
+   easier to spot:
+
+   ```c
+   addr_t virt = { 1, 3, 7, 15, 31 };
+   ```
+
+   Then, `make` the executable and use GDB to
    confirm that the binary representation of the `addr_t` contains
    the values in their appropiate locations within the type. You
-   may find `p/t` and `x/d` useful for printing and examining
-   the values in GDB.
+   may findf `x/gt` useful for examining the address in GDB:
+
+   ```
+   (gdb) x/gt &virt
+   0x7fffffffe158:  0000000111110000000001111000000000011100000000000110000000000001
+   ```
 
 1. Repeat the last step for a couple different virtual addresses
-   to test confirm that your `struct` is defined correctly.
+   to confirm that your `struct` is defined correctly.
 
 **CHECKPOINT**
 
@@ -107,13 +123,14 @@ useful as a reference.
    * `addr_t frame`
    * `union entry_type * next`
 
-1. For convenience, also create a typedef for an `entry_t` type based
+1. For convenience, also create a `typedef` for an `entry_t` type based
    on `union entry_type`.
 
 1. In `paging.c`, declare a page table called `table0` with
-   the appropriate number of entried. Each element of the
-   array should be of type `entry_t`. In `main`, initialize
-   the entries in the table to `0`.
+   the maximum number of entries based on the bit-width of
+   `pn0` in `addr_t`. Each element of the array should be of
+   type `entry_t`. In `main`, initialize the entries in the table
+   to `0`.
 
    **CHECK YOURSELF:** Is the size of the table what you thought it would be?
 
@@ -123,15 +140,28 @@ useful as a reference.
      given virtual address based on the page table.
 
      * To compute the address, you will need to follow the table to the
-	   next table, etc., until you get to the final table, which will give
-	   you the frame number.
+       next table, etc., until you get to the final table, which will give
+       you the frame number. In an ideal scenario where all the tables
+       already exists, you might do something similar to the following:
 
-	 * If the next table does not exist, then you should use `malloc(3)` to
-	   dynamically allocate the table and initialize its values. For this
-	   exercise, you may initialize the intermediate tables to and frame numbers
-	   such that no frames overlap between addresses. In a real operating system,
-	   `kmalloc` (i.e., the kernel's memory allocator) is usually used to create
-	   the subsequent tables.
+       ```c
+       addr_t v = // some address
+       addr_t f = table0[v.pn0].next[v.pn1].next[v.pn2].next[v.pn3].frame;
+       addr_t p = f * 4096 + v.off;
+       ```
+
+     * If the next table does not exist, then you should use `malloc(3)` to
+       dynamically allocate the table and initialize its values. For this
+       exercise, you may initialize the intermediate tables to and frame numbers
+       such that no frames overlap between addresses. In a real operating system,
+       `kmalloc` (i.e., the kernel's memory allocator) is usually used to create
+       the subsequent tables. Here is an example:
+
+       ```c
+       if (table0[v.pn0].next == NULL) {
+           table0[v.pn0].next = malloc(sizeof(entry_t) * count);
+       } // if
+       ```
 
 1. In `main`, write code to test your implementation. Provide enough output to
    convince yourself and others that your implementation works. At a minumum,
