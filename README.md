@@ -168,14 +168,21 @@ useful as a reference.
        whereas a `0` in the final table would refer to the first frame in
        physical memory.
 
+	   Potentially, there is a separate `table1` for each row in `table0` and
+	   likewise for the remaining tables, respectively. This is not feasible
+	   due their combined size. Instead, we create the subsequent tables
+	   as needed -- see the next bullet point.
+
      * If the next table does not exist, then you should use `malloc(3)` to
        dynamically allocate the table and initialize its values. For this
        exercise, you may initialize the intermediate tables to and frame numbers
        such that no frames overlap between addresses. In a real operating system,
        `kmalloc` (i.e., the kernel's memory allocator) is usually used to create
-       the subsequent tables. Here is an example:
+       the subsequent tables. Here is an example where `count` denotes the
+	   number of entries in the table:
 
        ```c
+	   // allocate table1, if needed
        if (table0[v.pn0].next == NULL) {
            table0[v.pn0].next = malloc(sizeof(entry_t) * count);
        } // if
